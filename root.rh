@@ -1,0 +1,5 @@
+rhload 'rhudbg/node'
+
+context :rhVM do
+	component :rhudbg
+end

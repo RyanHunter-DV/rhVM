@@ -1,0 +1,4 @@
+component :rhudbg do
+	required 'uvm.standard'
+	fileset 'rhudbg.sv'
+end

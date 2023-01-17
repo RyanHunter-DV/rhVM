@@ -1,4 +1,2 @@
-component :rhudbg do
-	required 'uvm.standard'
-	fileset 'rhudbg.sv'
-end
+## only one version can appear here
+rhload 'v1/node'

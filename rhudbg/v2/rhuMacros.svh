@@ -12,9 +12,9 @@
 			string msg = {`"line`",", ",extMsg}; \
 			`debug($sformatf("calling %s",msg)) \
 			line; \
-		end
-	`else
-		line;
+		end \
+	`else \
+		line; \
 	`endif
 
 `endif

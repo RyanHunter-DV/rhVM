@@ -6,6 +6,8 @@ class RhuDebugger extends uvm_report_object;
 	// static RhuDebugger inst = RhuDebugger::getDebugger();
 	static bit initialized = 1'b0;
 	static string enabledObjs[$];
+	static string enabledIDs[$];
+	uvm_component enabledComps[$];
 	
 	// uvm_component comps[$];
 	// `uvm_object_utils(RhuDebugger)
@@ -20,10 +22,14 @@ class RhuDebugger extends uvm_report_object;
 		super.new(name);
 		if (initialized==0) setup;
 		if (__objEnabled__(obj.get_type_name())) begin
+			if (T=="component") begin
+				uvm_component comp;
+				$cast(comp,obj);
+				__recordEnabledComp__(comp);
+			end
 			__setupObjFileAndActions__(obj,T);
 		end
 	endfunction
-
 	
 	extern static function void setup();
 	// user command example:
@@ -43,7 +49,17 @@ class RhuDebugger extends uvm_report_object;
 	// check the given typename is in the enable list or not
 	extern function bit __objEnabled__ (string typename);
 	extern function string __removeParams__ (string src);
+	// manually update childern for some circumstance that children of this
+	// component not yet created when the debugger newed
+	extern function void updateChildren (uvm_component comp);
+	extern local function void __recordEnabledComp__ (uvm_component comp);
+	extern local function bit __compEnabled__ (uvm_component comp);
+	extern local function bit __idEnabled__ (string id);
 endclass
+function void RhuDebugger::__recordEnabledComp__(uvm_component comp); // ##{{{
+	// debug disabled, $display("DEBUG, recording enable component id(%0d)",comp.get_inst_id());
+	enabledComps.push_back(comp);
+endfunction // ##}}}
 
 function string RhuDebugger::__removeParams__(string src); // ##{{{
 	string raw = src;
@@ -59,18 +75,37 @@ endfunction // ##}}}
 
 function bit RhuDebugger::__objEnabled__(string typename); // ##{{{
 	string rawtype = __removeParams__(typename);
-	$display($time,", searching for objEnabled, typename(%s)",rawtype);
+	// debug disabled, $display($time,", searching for objEnabled, typename(%s)",rawtype);
 	foreach (enabledObjs[i]) begin
 		if (enabledObjs[i]==rawtype) return 1;
 	end
 	return 0;
 endfunction // ##}}}
 
+function bit RhuDebugger::__compEnabled__(uvm_component comp); // ##{{{
+	foreach (enabledComps[i])
+		if (enabledComps[i]==comp) begin
+			// debug disabled, $display("DEBUG, get enabled component for id(%0d)",comp.get_inst_id());
+			return 1;
+		end
+	return 0;
+endfunction // ##}}}
+function void RhuDebugger::updateChildren(uvm_component comp); // ##{{{
+	uvm_component children[$];
+	if (!__compEnabled__(comp)) return;
+	comp.get_children(children);
+	foreach (children[i]) begin
+		__recordEnabledComp__(children[i]);
+		this.__setupObjFileAndActions__(children[i],"component");
+	end
+	return;
+endfunction // ##}}}
 function void RhuDebugger::__setupObjFileAndActions__(uvm_object obj,string T); // ##{{{
 	// setup current object
 	string id = $sformatf("RHUDBG-%0d",obj.get_inst_id());
 	UVM_FILE file=$fopen($sformatf("%s.log",obj.get_full_name()),"w");
-	$display($time,", set_id_file, id(%s) => file(%s.log)",id,obj.get_full_name());
+	// debug disabled, $display($time,", set_id_file, id(%s) => file(%s.log)",id,obj.get_full_name());
+	enabledIDs.push_back(id);
 	m_rh.set_id_file(id,file);
 	m_rh.set_id_action(id,UVM_LOG);
 	if (T=="component") begin
@@ -84,6 +119,10 @@ function void RhuDebugger::__setupObjFileAndActions__(uvm_object obj,string T); 
 	return;
 endfunction // ##}}}
 
+function bit RhuDebugger::__idEnabled__(string id); // ##{{{
+	foreach (enabledIDs[i]) if (id==enabledIDs[i]) return 1;
+	return 0;
+endfunction // ##}}}
 function void RhuDebugger::__setupCommandOptions__(); // ##{{{
 	string option;
 	int len;
@@ -102,11 +141,11 @@ function void RhuDebugger::__setupCommandOptions__(); // ##{{{
 		end
 	end
 	// debug
-	foreach (enabledObjs[i]) $display("enabledObjs[%0d] => %s",i,enabledObjs[i]);
+	// debug disabled, foreach (enabledObjs[i]) $display("enabledObjs[%0d] => %s",i,enabledObjs[i]);
 endfunction // ##}}}
 function void RhuDebugger::log(int instID,string msg,string file,int line); // ##{{{
 	string id = $sformatf("RHUDBG-%0d",instID);
-	uvm_report_info(id,msg,UVM_LOW,file,line,"",1); // force report
+	if (__idEnabled__(id)) uvm_report_info(id,msg,UVM_LOW,file,line,"",0);
 endfunction // ##}}}
 
 function void RhuDebugger::setup(); // ##{{{

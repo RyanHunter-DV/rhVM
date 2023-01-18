@@ -2,7 +2,7 @@
 `define rhuMacros__svh
 
 `define debug(msg) \
-	`ifndef RHUDEBUG_DISABLE \
+	`ifndef RHUDBG_DISABLE \
 		debug.log(this.get_inst_id(),msg,`__FILE__,`__LINE__); \
 	`endif
 

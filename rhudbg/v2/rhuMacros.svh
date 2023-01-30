@@ -9,8 +9,8 @@
 `define debugCall(extMsg,line) \
 	`ifndef RHUDBG_DISABLE \
 		begin \
-			string msg = {`"line`",", ",extMsg}; \
-			`debug($sformatf("calling %s",msg)) \
+			string _local_msg = {`"line`",", ",extMsg}; \
+			`debug($sformatf("calling %s",_local_msg)) \
 			line; \
 		end \
 	`else \

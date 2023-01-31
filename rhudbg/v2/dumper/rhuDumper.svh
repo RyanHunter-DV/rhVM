@@ -5,13 +5,21 @@
 class RhuDumper;
 
 	static RhuInterfaceDumper idumpPool[string];
+	static string dumpRoot = "./dump";
+	static bit dumperInitialized = 1'b0;
 	
 	function new ();
 	endfunction
 
 	extern static function void record (string log,string sig,int width,logic[`RHUDUMPER_MAX_WIDTH-1:0] val,time _t);
 	extern static function void postProcess (string log);
+	extern static local function void __initialize__ ();
 endclass : RhuDumper
+
+function void RhuDumper::__initialize__(); // ##{{{
+	$system($sformatf("mkdir %0s",dumpRoot));
+	dumperInitialized = 1'b1;
+endfunction // ##}}}
 
 function void RhuDumper::postProcess(string log); // ##{{{
 	foreach (idumpPool[log]) begin
@@ -30,10 +38,11 @@ function void RhuDumper::record(
 	time _t
 ); // ##{{{
 	RhuInterfaceDumper idump;
+	if (!dumperInitialized) __initialize__();
 	if (idumpPool.exists(log)) idump = idumpPool[log];
 	else begin
 		//DEBUG, $display($time,", new idump created, log: %s",log); // DEBUG
-		idump = new(log);
+		idump = new(log,dumpRoot);
 		idumpPool[log] = idump;
 	end
 

@@ -29,12 +29,14 @@ endfunction // ##}}}
 
 class RhuInterfaceDumper;
 	string name;
+	string rootPath;
 	UVM_FILE log;
 	RhuInterfaceDumper_signalVector signals[string];
 	bit initialized;
 
-	function new (string n="<unknown>");
+	function new (string n="<unknown>",string root);
 		name = n;
+		rootPath = root;
 		__initDumpFile__(n);
 		initialized = 1'b0;
 	endfunction
@@ -67,7 +69,7 @@ function void RhuInterfaceDumper::__initDumpFile__(string f); // ##{{{
 	string headmessage = "all signals are starting with x or z value,";
 	headmessage = {headmessage,"\nso if a signal that never occurred in this log means it never changed."};
 	headmessage = {headmessage,"\nPlus, this dumper only records signals whose value changed at a different simtime"};
-	log = $fopen(f,"w");
+	log = $fopen({rootPath,"/",f},"w");
 	$fdisplay(log,"ATTENTION: %s",headmessage);
 	$fdisplay(log,"");
 	$fdisplay(log,"INTERFACE HIERARCHY: %s",ifc);

@@ -58,11 +58,11 @@
 	`endif
 
 `define rhuLogicSignal_guard(var,width) \
-	always @(var) RhuDumper::record($sformatf("%m.dump"),`"var`",width,var,$time);
+	always @(var) rhudbg::RhuDumper::record($sformatf("%m.dump"),`"var`",width,var,$time);
 
 `define rhuDumperPostProcess \
 	`ifndef RHUDBG_DISABLE \
-		final RhuDumper::postProcess($sformatf("%m.dump")); \
+		final rhudbg::RhuDumper::postProcess($sformatf("%m.dump")); \
 	`endif
 
 

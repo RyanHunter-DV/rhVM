@@ -1,0 +1,3 @@
+interface Intf();
+	`debug
+endinterface

@@ -14,6 +14,9 @@ package rhudbg;
 	import uvm_pkg::*;
 	`include "rhuMacros.svh"
 	`include "rhuDebugger.svh"
+
+	// includes caller mechanism
+	`include "caller/rhuCaller.svh"
 endpackage
 
 `endif

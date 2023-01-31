@@ -1,0 +1,10 @@
+rhload '../../node'
+component :exampleComponent do
+	## required 'uvm.standard'
+	fileset 'envPkg.sv'
+	fileset 'top.sv'
+end
+
+context :exampleContext do
+	component :exampleComponent
+end

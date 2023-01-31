@@ -17,7 +17,7 @@
 	begin \
 		RhuCaller _caller = RhuCaller::getGlobal(); \
 		string _local_msg = {`"expr`",", ",extMsg}; \
-		_caller.stack(`__FILE__,line);
+		_caller.stack(`__FILE__,line); \
 		`debug($sformatf("calling %s",_local_msg)) \
 		expr; \
 	end

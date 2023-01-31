@@ -1,6 +1,7 @@
-rhload '../../node'
+rhload '../../../root'
 component :exampleComponent do
-	## required 'uvm.standard'
+	required 'uvm.standard'
+	required 'rhVM.rhudbg'
 	fileset 'envPkg.sv'
 	fileset 'top.sv'
 end
@@ -11,10 +12,14 @@ end
 
 test :exampleTest do
 	config :exampleConfig
+	simopt :all,"+UVM_TESTNAME=baseTest"
+	simopt :all,"+RHUDBG=baseEnv"
 end
 
 
 context :exampleContext do
 	component :exampleComponent
+	config :exampleConfig
+	test :exampleTest
 end
 

@@ -1,3 +1,2 @@
 interface Intf();
-	`debug
 endinterface

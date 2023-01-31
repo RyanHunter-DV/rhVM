@@ -7,8 +7,10 @@ class RhuCaller;
 
 	string fileStack[$];
 	int    lineStack[$];
+	int maxStackSize;
 
 	function new ();
+		maxStackSize = 10; // default
 	endfunction
 
 	extern static function RhuCaller getGlobal ();
@@ -39,6 +41,11 @@ function void RhuCaller::caller(int lvl,ref string file,ref int line); // ##{{{
 endfunction // ##}}}
 
 function void RhuCaller::stack(string file,int line); // ##{{{
+	if (fileStack.size() >= maxStackSize) begin
+		// remove the oldest one if stack exceeds the max size
+		void'(fileStack.pop_front());
+		void'(lineStack.pop_front());
+	end
 	fileStack.push_back(file);
 	lineStack.push_back(line);
 endfunction // ##}}}

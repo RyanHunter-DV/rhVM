@@ -1,9 +1,11 @@
 `include "uvm_macros.svh"
-import uvm_pkg::*;
-import rhudbg::*;
-import envPkg::*;
 `include "intf.sv"
 module top;
+	import uvm_pkg::*;
+	import rhudbg::*;
+	import envPkg::*;
+
+
 	logic clk,rstn;
 	Intf uif(clk,rstn);
 

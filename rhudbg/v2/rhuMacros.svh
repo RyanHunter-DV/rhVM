@@ -13,6 +13,19 @@
 		expr; \
 	`endif
 
+`define debugLine(extMsg,expr) \
+	`ifndef RHUDBG_DISABLE \
+		`debugLine_guard(extMsg,expr) \
+	`else \
+		expr; \
+	`endif
+`define debugLine_guard(extMsg,expr) \
+	begin \
+		string _local_msg = {`"expr`",", ",extMsg}; \
+		`debug($sformatf("executing %s",_local_msg)) \
+		expr; \
+	end
+
 `define debugCall_guard(extMsg,expr,line) \
 	begin \
 		RhuCaller _caller = RhuCaller::getGlobal(); \

@@ -32,8 +32,8 @@ function void RhuCaller::caller(int lvl,ref string file,ref int line); // ##{{{
 		return;
 	end
 
-	file = fileStack.pop_front();
-	line = lineStack.pop_front();
+	file = fileStack.pop_back();
+	line = lineStack.pop_back();
 
 	return;
 endfunction // ##}}}

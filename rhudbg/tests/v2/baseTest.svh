@@ -33,6 +33,13 @@ function void baseEnv::build_phase(uvm_phase phase); // ##{{{
 		`debugCall("",callerTest(0))
 		`debugCall("",callerTest(1))
 	join
+	begin
+		int ia=0;
+		// do not use debugCall to execute a line expression, use debugLine
+		// instead
+		`debugLine("add one expression",ia=10)
+	end
+	`debugCall("after expression line",callerTest(2))
 	`debug("local build_phase leaving ...")
 	debug.updateChildren(this);
 endfunction // ##}}}

@@ -5,6 +5,16 @@ component :exampleComponent do
 	fileset 'top.sv'
 end
 
+config :exampleConfig do
+	component :exampleComponent
+end
+
+test :exampleTest do
+	config :exampleConfig
+end
+
+
 context :exampleContext do
 	component :exampleComponent
 end
+

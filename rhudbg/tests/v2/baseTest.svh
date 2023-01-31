@@ -75,5 +75,8 @@ function void baseTest::connect_phase(uvm_phase phase); // ##{{{
 endfunction // ##}}}
 task baseTest::run_phase(uvm_phase phase); // ##{{{
 	super.run_phase(phase);
+	phase.raise_objection(this);
+	#1us;
+	phase.drop_objection(this);
 endtask // ##}}}
 `endif

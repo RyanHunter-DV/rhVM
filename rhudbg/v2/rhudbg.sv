@@ -12,11 +12,17 @@
 `include "uvm_macros.svh"
 package rhudbg;
 	import uvm_pkg::*;
+	// TODO import Rhlib::*;
+
 	`include "rhuMacros.svh"
 	`include "rhuDebugger.svh"
 
 	// includes caller mechanism
 	`include "caller/rhuCaller.svh"
+
+	// includes dumper mechanism
+	`include "dumper/rhuInterfaceDumper.svh"
+	`include "dumper/rhuDumper.svh"
 endpackage
 
 `endif

@@ -1,6 +1,8 @@
 `ifndef rhuMacros__svh
 `define rhuMacros__svh
 
+`define RHUDUMPER_MAX_WIDTH 2048
+
 `define debug(msg) \
 	`ifndef RHUDBG_DISABLE \
 		debug.log(this.get_inst_id(),msg,`__FILE__,`__LINE__); \
@@ -48,6 +50,20 @@
 		RhuCaller _callerTmp = RhuCaller::getGlobal(); \
 		_callerTmp.caller(0,file,line); \
 	end
+
+`define rhuLogicSignal(var,width) \
+	logic [width-1:0] var; \
+	`ifndef RHUDBG_DISABLE \
+		`rhuLogicSignal_guard(var,width) \
+	`endif
+
+`define rhuLogicSignal_guard(var,width) \
+	always @(var) RhuDumper::record($sformatf("%m.dump"),`"var`",width,var,$time);
+
+`define rhuDumperPostProcess \
+	`ifndef RHUDBG_DISABLE \
+		final RhuDumper::postProcess($sformatf("%m.dump")); \
+	`endif
 
 
 `endif

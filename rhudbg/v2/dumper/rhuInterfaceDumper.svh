@@ -14,7 +14,10 @@ class RhuInterfaceDumper_signalVector;
 
 	function string formatted();
 		logic [`RHUDUMPER_MAX_WIDTH-1:0] val=__vectorTobits__();
-		string rtn = $sformatf("%0d'h%0h",width,val);
+		string bits="b";
+		string rtn;
+		foreach (vector[i]) bits = {$sformatf("%0b",vector[i]),bits};
+		rtn = $sformatf("%0d'h%0h(%s)",width,val,bits);
 		return rtn;
 	endfunction
 

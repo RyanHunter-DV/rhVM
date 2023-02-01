@@ -7,6 +7,7 @@ class RhuDebugger extends uvm_report_object;
 	static bit initialized = 1'b0;
 	static string enabledObjs[$];
 	static string enabledIDs[$];
+	static string rootPath;
 	uvm_component enabledComps[$];
 	
 	// uvm_component comps[$];
@@ -103,7 +104,7 @@ endfunction // ##}}}
 function void RhuDebugger::__setupObjFileAndActions__(uvm_object obj,string T); // ##{{{
 	// setup current object
 	string id = $sformatf("RHUDBG-%0d",obj.get_inst_id());
-	UVM_FILE file=$fopen($sformatf("%s.log",obj.get_full_name()),"w");
+	UVM_FILE file=$fopen($sformatf("%s/%s.log",rootPath,obj.get_full_name()),"w");
 	// debug disabled, $display($time,", set_id_file, id(%s) => file(%s.log)",id,obj.get_full_name());
 	enabledIDs.push_back(id);
 	m_rh.set_id_file(id,file);
@@ -150,6 +151,8 @@ endfunction // ##}}}
 
 function void RhuDebugger::setup(); // ##{{{
 	__setupCommandOptions__;
+	rootPath = "./logs";
+	$system($sformatf("mkdir %s",rootPath));
 	initialized = 1'b1;
 endfunction // ##}}}
 

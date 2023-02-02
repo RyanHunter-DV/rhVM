@@ -3,37 +3,37 @@
 
 `define RHUDUMPER_MAX_WIDTH 2048
 
-`define debug(msg) \
+`define rhudbg(msg) \
 	`ifndef RHUDBG_DISABLE \
-		debug.log(this.get_inst_id(),msg,`__FILE__,`__LINE__); \
+		config.debug.log(this,msg,`__FILE__,`__LINE__); \
 	`endif
 
-`define debugCall(extMsg,expr) \
+`define rhudbgCall(extMsg,expr) \
 	`ifndef RHUDBG_DISABLE \
-		`debugCall_guard(extMsg,expr,`__LINE__) \
+		`rhudbgCall_guard(extMsg,expr,`__LINE__) \
 	`else \
 		expr; \
 	`endif
 
-`define debugLine(extMsg,expr) \
+`define rhudbgLine(extMsg,expr) \
 	`ifndef RHUDBG_DISABLE \
-		`debugLine_guard(extMsg,expr) \
+		`rhudbgLine_guard(extMsg,expr) \
 	`else \
 		expr; \
 	`endif
-`define debugLine_guard(extMsg,expr) \
+`define rhudbgLine_guard(extMsg,expr) \
 	begin \
 		string _local_msg = {`"expr`",", ",extMsg}; \
-		`debug($sformatf("executing %s",_local_msg)) \
+		`rhudbg($sformatf("executing %s",_local_msg)) \
 		expr; \
 	end
 
-`define debugCall_guard(extMsg,expr,line) \
+`define rhudbgCall_guard(extMsg,expr,line) \
 	begin \
 		RhuCaller _caller = RhuCaller::getGlobal(); \
 		string _local_msg = {`"expr`",", ",extMsg}; \
 		_caller.stack(`__FILE__,line); \
-		`debug($sformatf("calling %s",_local_msg)) \
+		`rhudbg($sformatf("calling %s",_local_msg)) \
 		expr; \
 	end
 

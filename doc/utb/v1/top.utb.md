@@ -96,9 +96,18 @@ end
 ```
 m = SVModule.new(module)
 m.setInst(inst)
+m.container(self)
 m.instance_eval(block)
 ```
-
+The connection will execute the signal connection by using a real hierarchy name from the container of the SVModule. Which will automatically search all interfaces/signals types in container and get the matched name. #MARK
+For example:
+```
+dut ...
+	connect (
+		'iClk'=>'tbClk'
+		'iPort'=>'mif.portA',
+	)
+```
 # Classes
 ## Top
 The top class which all `*.utb` will be evaluated.
@@ -108,4 +117,18 @@ The top class which all `*.utb` will be evaluated.
 - [[#dut]]
 
 ## SVInterface
-A ruby class declares behaviors for interface.
+A ruby class declares behaviors for interface. 
+- instance code: `Interface vif()`
+- config code:
+	- type :set,:get respectively for `uvm_config_db::set` and `uvm_config_db::get`
+- 
+### attributes
+### methods
+`+ configCode : string (type)`
+get SV code of config an interface.
+`+ instCode : string ()`
+get SV code of instantiating an interface.
+`Interface#(xxx) vif(xxx);`
+
+
+
